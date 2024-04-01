@@ -1,5 +1,7 @@
 // main.dart
 
+import 'dart:async';
+import 'app.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -7,18 +9,8 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'WebView App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: WebViewScreen(initialUrl: 'https://www.github.com'), // Replace with your URL
-    );
-  }
-}
+
+
 
 class WebViewScreen extends StatefulWidget {
   final String initialUrl;
@@ -31,16 +23,32 @@ class WebViewScreen extends StatefulWidget {
 
 class _WebViewScreenState extends State<WebViewScreen> {
   TextEditingController _searchController = TextEditingController();
-  late WebViewController _webViewController;
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
+  
   String currentUrl = '';
 
+  void initState(){
+    super.initState();
+    currentUrl = widget.initialUrl;
+  }
+
   void _performSearch(String query){
-    String searchUrl = 'https://facebook.com/search?q=$query';
+    String searchUrl;
+     if(Uri.tryParse(query)?.hasAbsolutePath??false){
+      searchUrl = query;
+     }
+     else{
+      searchUrl = 'https://facebook.com/search?q=$query';
+     }
     setState(() {
       currentUrl = searchUrl;
     });
 
-    _webViewController.loadUrl(currentUrl);
+    _controller.future.then((value) {
+      print('Loading URL: $currentUrl');
+      
+       value.loadUrl(Uri.parse(currentUrl).toString()); 
+  });
   }
 
   @override
@@ -53,14 +61,16 @@ class _WebViewScreenState extends State<WebViewScreen> {
         children: [
           Expanded(
             child: WebView(
-              initialUrl: widget.initialUrl,
+              initialUrl: currentUrl,
               javascriptMode: JavascriptMode.unrestricted,
-              onPageFinished: (url) {
-                // Handle page load completion (e.g., hide progress bar)
-                print('Page loadded: $url');
+              onWebViewCreated: (WebViewController webViewController) {
+                _controller.complete(webViewController);
               },
-              onWebViewCreated: (controller) {
-                _webViewController = controller;
+              onPageFinished: (url) {
+                print('Page loaded: $url');
+              },
+              onWebResourceError: (error) {
+                print('WebView error: ${error.description}');
               },
             ),
           ),
