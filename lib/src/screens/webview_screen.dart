@@ -51,6 +51,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       ),
       body: Column(
         children: [
+           MySearchBar(_searchController,_performSearch), 
           Expanded(
             child: WebView(
               initialUrl: currentUrl,
@@ -65,11 +66,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 print('WebView error: ${error.description}');
               },
             ),
-          ),
-          SearchBar(_searchController,_performSearch), 
+          ),         
         ],
       ),
-      bottomNavigationBar:CustomBottomNavigationBar()
+      bottomNavigationBar:Container(
+        height: 100,
+        child: CustomBottomNavigationBar(),
+      )
         
     );
   }
