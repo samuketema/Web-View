@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      backgroundColor: const Color.fromARGB(255, 146, 146, 2),
+    return Theme(data: Theme.of(context).copyWith(
+      canvasColor: Color.fromARGB(255, 133, 120, 1),
+    ),
+    child:BottomNavigationBar(
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -25,12 +29,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ),
        BottomNavigationBarItem(
           icon: Icon(Icons.person ),
-          label: 'Search',
+          label: 'profile',
         ),
       ],
       onTap: (index) {
         // Handle navigation based on the index (e.g., switch screens).
       },
-    );
+    ));
   }
 }
