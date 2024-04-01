@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My WebView App',
+      title: 'WebView App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -31,12 +31,23 @@ class WebViewScreen extends StatefulWidget {
 
 class _WebViewScreenState extends State<WebViewScreen> {
   TextEditingController _searchController = TextEditingController();
+  late WebViewController _webViewController;
+  String currentUrl = '';
+
+  void _performSearch(String query){
+    String searchUrl = 'https://facebook.com/search?q=$query';
+    setState(() {
+      currentUrl = searchUrl;
+    });
+
+    _webViewController.loadUrl(currentUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My WebView App'), // Customize the title
+        title: Text('WebView App'), // Customize the title
       ),
       body: Column(
         children: [
@@ -46,6 +57,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
               javascriptMode: JavascriptMode.unrestricted,
               onPageFinished: (url) {
                 // Handle page load completion (e.g., hide progress bar)
+                print('Page loadded: $url');
+              },
+              onWebViewCreated: (controller) {
+                _webViewController = controller;
               },
             ),
           ),
@@ -62,6 +77,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     onSubmitted: (value) {
                       // Handle search action (e.g., load a new URL)
                       // You can use value (the search query) here.
+                      _performSearch(value);
                     },
                   ),
                 ),
@@ -70,6 +86,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   onPressed: () {
                     // Trigger search action when the search icon is pressed
                     // You can use _searchController.text as the search query.
+                    _performSearch(_searchController.text);
                   },
                 ),
               ],
