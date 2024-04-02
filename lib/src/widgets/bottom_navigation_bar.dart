@@ -5,7 +5,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(data: Theme.of(context).copyWith(
-      canvasColor: Color.fromARGB(255, 165, 165, 2),
+      canvasColor: Color.fromARGB(255, 239, 187, 109),
     ),
     child:BottomNavigationBar(
       showSelectedLabels: true,
