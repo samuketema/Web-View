@@ -1,8 +1,10 @@
+// main file
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/bottom_navigation_bar.dart';
+import '../utils.dart'; 
 
 class WebViewScreen extends StatefulWidget {
   final String initialUrl;
@@ -21,28 +23,16 @@ class _WebViewScreenState extends State<WebViewScreen> {
   String currentUrl = '';
   double progress = 0;
 
-  void initState(){
+  @override
+  void initState() {
     super.initState();
     currentUrl = widget.initialUrl;
   }
 
-  void _performSearch(String query){
-    String searchUrl;
-     if(Uri.tryParse(query)?.hasAbsolutePath??false){
-      searchUrl = query;
-     }
-     else{
-      searchUrl = 'https://facebook.com/search?q=$query';
-     }
+  void _updateCurrentUrl(String newUrl) {
     setState(() {
-      currentUrl = searchUrl; 
+      currentUrl = newUrl;
     });
-
-    _controller.future.then((value) {
-      print('Loading URL: $currentUrl');
-      
-       value.loadUrl(Uri.parse(currentUrl).toString()); 
-  });
   }
 
   @override
@@ -55,18 +45,25 @@ class _WebViewScreenState extends State<WebViewScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            onPressed:(){}),
-
+            onPressed: () {
+              focusNode.requestFocus();
+            },
+          ),
           PopupMenuButton(itemBuilder: (context) => [
-            PopupMenuItem(child: Text("Option 1"),
-            ),
+            PopupMenuItem(child: Text("Option 1")),
             PopupMenuItem(child: Text('Option 2'))
           ])
         ], 
       ),
       body: Column(
         children: [
-           MySearchBar(_searchController,_performSearch,focusNode), 
+           MySearchBar(
+              _searchController,
+              (query) {
+               performSearch(query, _controller, _updateCurrentUrl);
+             },
+              focusNode
+           ), 
           Expanded(
             child: WebView(
               initialUrl: currentUrl,
@@ -80,7 +77,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               onWebResourceError: (error) {
                 print('WebView error: ${error.description}');
               },
-              onProgress: (int progress){
+              onProgress: (int progress) {
                 setState(() {
                   this.progress = progress / 100;
                 });
@@ -89,7 +86,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           ),         
         ],
       ),
-      bottomNavigationBar:Container(
+      bottomNavigationBar: Container(
         height: 85,
         child: CustomBottomNavigationBar(),
       ),
@@ -128,7 +125,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
           return Container();
         },
       ),
-        
     );
   }
 }
