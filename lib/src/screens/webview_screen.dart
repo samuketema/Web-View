@@ -38,23 +38,27 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 159, 159, 2),
-        foregroundColor: Colors.white,
-        title: Text('WebView App'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              focusNode.requestFocus();
-            },
-          ),
-          PopupMenuButton(itemBuilder: (context) => [
-            PopupMenuItem(child: Text("Option 1")),
-            PopupMenuItem(child: Text('Option 2'))
-          ])
-        ], 
+      appBar:PreferredSize(
+  preferredSize: Size.fromHeight(80.0), 
+  child: AppBar(
+    backgroundColor: Color.fromARGB(255, 246, 190, 107),
+    foregroundColor: Colors.white,
+    title: Text('WebView App'),
+    actions: <Widget>[
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+          focusNode.requestFocus();
+        },
       ),
+      PopupMenuButton(itemBuilder: (context) => [
+        PopupMenuItem(child: Text("Option 1")),
+        PopupMenuItem(child: Text('Option 2'))
+      ]),
+    ],
+  ),
+),
+
       body: Column(
         children: [
            MySearchBar(
