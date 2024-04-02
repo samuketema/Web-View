@@ -5,7 +5,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(data: Theme.of(context).copyWith(
-      canvasColor: Color.fromARGB(255, 133, 120, 1),
+      canvasColor: Color.fromARGB(255, 165, 165, 2),
     ),
     child:BottomNavigationBar(
       showSelectedLabels: true,
@@ -33,7 +33,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ),
       ],
       onTap: (index) {
-        // Handle navigation based on the index (e.g., switch screens).
+        //  Handle navigation based on the index (e.g., switch screens).
       },
     ));
   }
