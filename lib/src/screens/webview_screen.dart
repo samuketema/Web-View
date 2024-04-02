@@ -16,8 +16,10 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   TextEditingController _searchController = TextEditingController();
   final Completer<WebViewController> _controller = Completer<WebViewController>();
+  final FocusNode focusNode = FocusNode();
   
   String currentUrl = '';
+  double progress = 0;
 
   void initState(){
     super.initState();
@@ -33,7 +35,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       searchUrl = 'https://facebook.com/search?q=$query';
      }
     setState(() {
-      currentUrl = searchUrl;
+      currentUrl = searchUrl; 
     });
 
     _controller.future.then((value) {
@@ -47,11 +49,24 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WebView App'), // Customize the title
+        backgroundColor: Color.fromARGB(255, 159, 159, 2),
+        foregroundColor: Colors.white,
+        title: Text('WebView App'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed:(){}),
+
+          PopupMenuButton(itemBuilder: (context) => [
+            PopupMenuItem(child: Text("Option 1"),
+            ),
+            PopupMenuItem(child: Text('Option 2'))
+          ])
+        ], 
       ),
       body: Column(
         children: [
-           MySearchBar(_searchController,_performSearch), 
+           MySearchBar(_searchController,_performSearch,focusNode), 
           Expanded(
             child: WebView(
               initialUrl: currentUrl,
@@ -65,14 +80,54 @@ class _WebViewScreenState extends State<WebViewScreen> {
               onWebResourceError: (error) {
                 print('WebView error: ${error.description}');
               },
+              onProgress: (int progress){
+                setState(() {
+                  this.progress = progress / 100;
+                });
+              },
             ),
           ),         
         ],
       ),
       bottomNavigationBar:Container(
-        height: 100,
+        height: 85,
         child: CustomBottomNavigationBar(),
-      )
+      ),
+      floatingActionButton: FutureBuilder<WebViewController>(
+        future: _controller.future,
+        builder: (BuildContext context, AsyncSnapshot<WebViewController> controller) {
+          if (controller.hasData) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_back),
+                  onPressed: () async {
+                    if (await controller.data!.canGoBack()) {
+                      controller.data!.goBack();
+                    }
+                  },
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.arrow_forward),
+                  onPressed: () async {
+                    if (await controller.data!.canGoForward()) {
+                      controller.data!.goForward();
+                    }
+                  },
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.refresh),
+                  onPressed: () {
+                    controller.data!.reload();
+                  },
+                ),
+              ],
+            );
+          }
+          return Container();
+        },
+      ),
         
     );
   }
