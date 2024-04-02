@@ -25,12 +25,20 @@ class MySearchBar extends StatelessWidget {
               },
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              _performSearch(_searchController.text);
-            },
-          ),
+         Container(
+  decoration: BoxDecoration(
+    color: Color.fromARGB(255, 240, 186, 106), 
+    shape: BoxShape.rectangle,
+  ),
+  child: IconButton(
+    icon: Icon(Icons.search),
+    color: Colors.white, 
+    onPressed: () {
+      _performSearch(_searchController.text);
+    },
+  ),
+)
+
         ],
       ),
     );
