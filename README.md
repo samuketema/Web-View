@@ -20,9 +20,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 2. Navigate into the project directory
 
-cd your-repo-name
+cd Web-View
 
-3. Install Flutter dependencies
+1. Install Flutter dependencies
 
 flutter pub get
 
