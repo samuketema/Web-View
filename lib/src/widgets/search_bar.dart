@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget {
+class MySearchBar extends StatelessWidget {
   final TextEditingController _searchController;
   final Function(String) _performSearch;
+  final FocusNode focusNode;
 
-  SearchBar(this._searchController, this._performSearch);
+  MySearchBar(this._searchController, this._performSearch, this.focusNode);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +16,9 @@ class SearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: _searchController,
+              focusNode: focusNode,
               decoration: InputDecoration(
-                hintText: 'Search...',
+                hintText: 'Search Event here...(eg:https://google.com)',
               ),
               onSubmitted: (value) {
                 _performSearch(value);
